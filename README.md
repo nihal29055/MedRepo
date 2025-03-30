@@ -2,7 +2,7 @@
 # MedReport: AI-Powered Medical Report Summarization
 
 <div align="center">
-  <img src="https://github.com/username/medreport/raw/main/public/logo.png" alt="MedReport Logo" width="200"/>
+  <img src="https://github.com/nihal29055/MedRepo/raw/main/public/logo.jpg" alt="MedReport Logo" width="200"/>
   <br>
   <p><strong>Simplifying healthcare information with AI</strong></p>
 </div>
@@ -56,10 +56,10 @@ The application transforms complex medical reports into easy-to-understand summa
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/medreport.git
+git clone https://github.com/nihal29055/MedRepo.git
 
 # Navigate to the project directory
-cd medreport
+cd MedRepo
 
 # Install dependencies
 npm install
@@ -125,12 +125,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-Project Lead - [your-email@example.com](mailto:your-email@example.com)
+Project Lead - [yadavnihal544@gmail.com](mailto:yadavnihal544@gmail.com)
 
-Project Link: [https://github.com/yourusername/medreport](https://github.com/yourusername/medreport)
+Project Link: [https://github.com/nihal29055/MedRepo](https://github.com/nihal29055/MedRepo)
 
 ---
 
 <div align="center">
-  <p>Made with ❤️ for better healthcare</p>
+  <p>Made with ❤️ for better healthcare by Nihal Yadav & Team</p>
 </div>
