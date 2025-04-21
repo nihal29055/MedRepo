@@ -17,6 +17,9 @@ import Reports from "./pages/Reports";
 import ReportDetail from "./pages/ReportDetail";
 import Insights from "./pages/Insights";
 import NotFound from "./pages/NotFound";
+import PatientProfile from "./pages/PatientProfile";
+import Settings from "./pages/Settings";
+import DoctorProfile from "./pages/DoctorProfile";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +40,9 @@ const App = () => (
               <Route path="/reports" element={<Reports />} />
               <Route path="/reports/:reportId" element={<ReportDetail />} />
               <Route path="/insights" element={<Insights />} />
+              <Route path="/doctor-profile" element={<DoctorProfile />} />
+              <Route path="/patient-profile" element={<PatientProfile />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
