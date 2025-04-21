@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { User, AuthState } from "../types/auth";
 import { toast } from "sonner";
 
+
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;

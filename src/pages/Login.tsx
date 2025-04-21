@@ -33,20 +33,27 @@ const Login = () => {
   const handleDemoLogin = async (role: "patient" | "doctor") => {
     setIsLoading(true);
     const demoEmail = role === "patient" ? "patient@medrep.com" : "doctor@medrep.com";
-    const demoPassword = "password"; // In a real app, this would not be hardcoded
-    
+    const demoPassword = "password"; // Ideally not hardcoded
+  
     try {
       setEmail(demoEmail);
       setPassword(demoPassword);
       await login(demoEmail, demoPassword);
       toast.success(`Logged in as Demo ${role === "doctor" ? "Doctor" : "Patient"}`);
-      navigate("/dashboard");
+  
+      // Navigate based on role
+      if (role === "doctor") {
+        navigate("/doctor-dashboard");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (error) {
       console.error("Demo login error:", error);
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-medical-light">
