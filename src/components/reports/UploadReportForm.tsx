@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useReports } from "../../context/ReportContext";
 import { Button } from "../../components/ui/button";
@@ -21,7 +20,7 @@ const UploadReportForm: React.FC = () => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0];
       setFile(selectedFile);
-      
+
       // Set a default title based on the filename if title is empty
       if (!title) {
         setTitle(selectedFile.name.split(".")[0].replace(/_/g, " "));
@@ -45,7 +44,7 @@ const UploadReportForm: React.FC = () => {
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0];
       setFile(droppedFile);
-      
+
       // Set a default title based on the filename if title is empty
       if (!title) {
         setTitle(droppedFile.name.split(".")[0].replace(/_/g, " "));
@@ -59,19 +58,39 @@ const UploadReportForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!file) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Please select a file to upload."
+        description: "Please select a file to upload.",
       });
       return;
     }
 
     try {
-      await uploadReport(file, reportType, title);
-      
+      // Backend integration for uploading the filenom 
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("type", reportType);
+      formData.append("title", title);
+
+      const response = await fetch("/api/reports/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload the report");
+      }
+
+      const result = await response.json();
+      toast({
+        variant: "success",
+        title: "Upload Successful",
+        description: "Your report has been uploaded and is being processed.",
+      });
+
       // Reset form
       setFile(null);
       setTitle("");
@@ -81,7 +100,7 @@ const UploadReportForm: React.FC = () => {
       toast({
         variant: "destructive",
         title: "Upload Failed",
-        description: "There was a problem uploading your report."
+        description: "There was a problem uploading your report.",
       });
     }
   };
@@ -90,18 +109,18 @@ const UploadReportForm: React.FC = () => {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="title">Report Title</Label>
-        <Input 
-          id="title" 
-          placeholder="Enter report title" 
+        <Input
+          id="title"
+          placeholder="Enter report title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
       </div>
-      
+
       <div className="space-y-2">
         <Label htmlFor="report-type">Report Type</Label>
-        <Select 
-          value={reportType} 
+        <Select
+          value={reportType}
           onValueChange={(value) => setReportType(value as ReportType)}
         >
           <SelectTrigger className="w-full">
@@ -117,12 +136,14 @@ const UploadReportForm: React.FC = () => {
           </SelectContent>
         </Select>
       </div>
-      
+
       <div className="space-y-2">
         <Label htmlFor="file">Upload Document</Label>
         <div
           className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer transition-colors ${
-            isDragging ? "border-medical-primary bg-medical-secondary/30" : "border-gray-300 hover:border-medical-primary"
+            isDragging
+              ? "border-medical-primary bg-medical-secondary/30"
+              : "border-gray-300 hover:border-medical-primary"
           }`}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -136,7 +157,7 @@ const UploadReportForm: React.FC = () => {
             accept=".pdf,.jpg,.jpeg,.png,.txt,.doc,.docx"
             onChange={handleFileChange}
           />
-          
+
           {!file ? (
             <div className="py-4">
               <FileUp className="h-8 w-8 mx-auto mb-2 text-gray-400" />
@@ -153,10 +174,10 @@ const UploadReportForm: React.FC = () => {
                   {file.name}
                 </span>
               </div>
-              <Button 
-                type="button" 
-                variant="ghost" 
-                size="icon" 
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
                 className="h-8 w-8"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -169,7 +190,7 @@ const UploadReportForm: React.FC = () => {
           )}
         </div>
       </div>
-      
+
       <Button type="submit" className="w-full" disabled={isLoading || !file}>
         {isLoading ? "Processing..." : "Upload and Analyze Report"}
       </Button>
