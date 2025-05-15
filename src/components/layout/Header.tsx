@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../../components/ui/button";
@@ -11,14 +10,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LogOut, User, Settings, FileText, Stethoscope } from "lucide-react";
 
 const Header = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const location = useLocation();
-  
-  const isDoctor = user?.role === 'doctor';
+  const navigate = useNavigate();
+
+  const isDoctor = user?.role === "doctor";
+
+  const handleLogout = async () => {
+    try {
+      await logout(); // Perform logout
+      navigate("/"); // Navigate to the main page after logout
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-10 w-full bg-white shadow-sm">
@@ -34,32 +43,46 @@ const Header = () => {
           {isAuthenticated && (
             <>
               {isDoctor ? (
-                <>
-                  <Link 
-                    to="/doctor-dashboard" 
-                    className={`flex items-center gap-1 ${location.pathname === "/doctor-dashboard" ? "text-medical-primary font-medium" : "text-gray-700 hover:text-medical-primary"} transition-colors`}
-                  >
-                    <Stethoscope className="h-4 w-4" />
-                    Doctor Dashboard
-                  </Link>
-                </>
+                <Link
+                  to="/doctor-dashboard"
+                  className={`flex items-center gap-1 ${
+                    location.pathname === "/doctor-dashboard"
+                      ? "text-medical-primary font-medium"
+                      : "text-gray-700 hover:text-medical-primary"
+                  } transition-colors`}
+                >
+                  <Stethoscope className="h-4 w-4" />
+                  Doctor Dashboard
+                </Link>
               ) : (
-                <Link 
-                  to="/dashboard" 
-                  className={`text-gray-700 ${location.pathname === "/dashboard" ? "text-medical-primary font-medium" : "text-gray-700 hover:text-medical-primary"} transition-colors`}
+                <Link
+                  to="/dashboard"
+                  className={`${
+                    location.pathname === "/dashboard"
+                      ? "text-medical-primary font-medium"
+                      : "text-gray-700 hover:text-medical-primary"
+                  } transition-colors`}
                 >
                   Dashboard
                 </Link>
               )}
-              <Link 
-                to="/reports" 
-                className={`text-gray-700 ${location.pathname === "/reports" ? "text-medical-primary font-medium" : "text-gray-700 hover:text-medical-primary"} transition-colors`}
+              <Link
+                to="/reports"
+                className={`${
+                  location.pathname === "/reports"
+                    ? "text-medical-primary font-medium"
+                    : "text-gray-700 hover:text-medical-primary"
+                } transition-colors`}
               >
                 Reports
               </Link>
-              <Link 
-                to="/insights" 
-                className={`text-gray-700 ${location.pathname === "/insights" ? "text-medical-primary font-medium" : "text-gray-700 hover:text-medical-primary"} transition-colors`}
+              <Link
+                to="/insights"
+                className={`${
+                  location.pathname === "/insights"
+                    ? "text-medical-primary font-medium"
+                    : "text-gray-700 hover:text-medical-primary"
+                } transition-colors`}
               >
                 Health Insights
               </Link>
@@ -73,12 +96,10 @@ const Header = () => {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage 
-                      src={user?.profilePicture} 
-                      alt={user?.name} 
-                    />
+                    <AvatarImage src={user?.profilePicture} alt={user?.name} />
                     <AvatarFallback>
-                      {user?.name?.split(" ")
+                      {user?.name
+                        ?.split(" ")
                         .map((n) => n[0])
                         .join("")}
                     </AvatarFallback>
@@ -115,7 +136,7 @@ const Header = () => {
                   </Link>
                 )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout}>
+                <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="w-4 h-4 mr-2" />
                   Logout
                 </DropdownMenuItem>
