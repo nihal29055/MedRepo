@@ -173,7 +173,7 @@ const Index = () => {
         <div className="container px-4 mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              How MedReport Works
+              How MediLink Works
             </h2>
             <p className="text-xl text-gray-600">
               A simple process to transform complex medical documents into actionable insights
@@ -222,7 +222,7 @@ const Index = () => {
               Take Control of Your Medical Information Today
             </h2>
             <p className="text-xl opacity-90 mb-8">
-              Join thousands of patients and healthcare providers using MedReport to simplify healthcare information.
+              Join thousands of patients and healthcare providers using MediLink to simplify healthcare information.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/signup">
@@ -247,7 +247,7 @@ const Index = () => {
             <div className="mb-6 md:mb-0">
               <div className="flex items-center gap-2">
                 <FileText className="w-6 h-6 text-medical-primary" />
-                <span className="text-xl font-bold text-white">MedReport</span>
+                <span className="text-xl font-bold text-white">MediLink</span>
               </div>
               <p className="mt-2 text-sm text-gray-400">
                 Simplifying healthcare information with AI
@@ -285,7 +285,7 @@ const Index = () => {
           </div>
           
           <div className="mt-8 pt-8 border-t border-gray-800 text-sm text-center md:text-left">
-            <p>&copy; {new Date().getFullYear()} MedReport. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} MediLink. All rights reserved.</p>
           </div>
         </div>
       </footer>
