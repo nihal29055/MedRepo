@@ -1,7 +1,7 @@
 const express = require("express");
-const connectDB = require("./config/db");
-const authRoutes = require("./routes/authRoutes");
-const doctorRoutes = require("./routes/doctorRoutes");
+const connectDB = require("./config/db.js");
+const authRoutes = require("./routes/authRoutes.js");
+const doctorRoutes = require("./routes/doctorRoutes.js");
 import nlpRoutes from "./routes/nlpRoutes.js";
 require("dotenv").config();
 
