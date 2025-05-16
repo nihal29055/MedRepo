@@ -6,9 +6,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { ReportProvider } from "./context/ReportContext";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 
 // Pages
 import Index from "./pages/Index";
+import NLPPage from "./pages/NLPPage";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
@@ -43,6 +47,7 @@ const App = () => (
               <Route path="/doctor-profile" element={<DoctorProfile />} />
               <Route path="/patient-profile" element={<PatientProfile />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/nlp" element={<NLPPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
