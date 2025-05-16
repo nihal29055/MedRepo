@@ -35,7 +35,7 @@ const Index = () => {
               </h1>
               
               <p className="text-xl text-gray-600 max-w-xl">
-                MedReport uses advanced NLP and AI to transform complex medical reports into easy-to-understand summaries, helping patients and doctors make better healthcare decisions.
+                MediLink is an AI-powered platform that connects patients with verified doctors for real-time chat and video consultations. Upload medical reports, get simplified insights using AI & NLP, track your health trends, and store records securely with blockchain — all in one place.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
