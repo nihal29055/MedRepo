@@ -35,7 +35,7 @@ const Header = () => {
         <div className="flex items-center gap-2">
           <Link to="/" className="flex items-center gap-2">
             <FileText className="w-6 h-6 text-medical-primary" />
-            <span className="text-xl font-bold text-medical-primary">MedReport</span>
+            <span className="text-xl font-bold text-medical-primary">MediLink</span>
           </Link>
         </div>
 

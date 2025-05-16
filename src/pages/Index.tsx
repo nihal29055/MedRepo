@@ -31,7 +31,7 @@ const Index = () => {
               </div>
               
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
-                AI-Powered Medical Report Summarization
+                MediLink : Bridging the HealthCare Gap
               </h1>
               
               <p className="text-xl text-gray-600 max-w-xl">
