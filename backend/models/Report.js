@@ -8,4 +8,6 @@ const reportSchema = new mongoose.Schema({
   fileUrl: { type: String, required: true },
 });
 
+reportSchema.index({ doctorId: 1, reportDate: -1 });
+
 module.exports = mongoose.model("Report", reportSchema);

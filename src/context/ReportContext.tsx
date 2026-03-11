@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 import { MedicalReport, ReportFilter, ReportType } from "../types/medical";
 import { toast } from "sonner";
 import { useAuth } from "./AuthContext";
@@ -174,34 +174,33 @@ export const ReportProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return reports.find(report => report.id === id);
   };
 
-  const filterReports = (filters: ReportFilter) => {
-    let filteredReports = [...reports];
-    
-    // Filter by report type
-    if (filters.type) {
-      filteredReports = filteredReports.filter(report => report.type === filters.type);
-    }
-    
-    // Filter by date range
-    if (filters.dateRange) {
-      filteredReports = filteredReports.filter(report => {
+  const filterReports = useCallback((filters: ReportFilter) => {
+    const query = filters.searchQuery ? filters.searchQuery.toLowerCase() : null;
+    const rangeStart = filters.dateRange?.start ?? null;
+    const rangeEnd = filters.dateRange?.end ?? null;
+
+    return reports.filter(report => {
+      if (filters.type && report.type !== filters.type) return false;
+
+      if (rangeStart !== null || rangeEnd !== null) {
         const reportDate = new Date(report.createdAt);
-        return reportDate >= filters.dateRange!.start && reportDate <= filters.dateRange!.end;
-      });
-    }
-    
-    // Filter by search query
-    if (filters.searchQuery) {
-      const query = filters.searchQuery.toLowerCase();
-      filteredReports = filteredReports.filter(report => 
-        report.title.toLowerCase().includes(query) || 
-        report.summary.toLowerCase().includes(query) ||
-        report.originalText.toLowerCase().includes(query)
-      );
-    }
-    
-    return filteredReports;
-  };
+        if (rangeStart && reportDate < rangeStart) return false;
+        if (rangeEnd && reportDate > rangeEnd) return false;
+      }
+
+      if (query) {
+        if (
+          !report.title.toLowerCase().includes(query) &&
+          !report.summary.toLowerCase().includes(query) &&
+          !report.originalText.toLowerCase().includes(query)
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [reports]);
 
   const deleteReport = (id: string) => {
     setReports(prev => prev.filter(report => report.id !== id));

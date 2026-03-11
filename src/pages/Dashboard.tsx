@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useReports } from "../context/ReportContext";
 import Header from "../components/layout/Header";
@@ -19,16 +19,27 @@ const Dashboard = () => {
   const [uploadOpen, setUploadOpen] = useState(false);
 
   // Filter reports based on search query
-  const filteredReports = reports.filter(report =>
-    report.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    report.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    report.keyInsights.diagnosis.some(d => d.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredReports = useMemo(() => {
+    const q = searchQuery.toLowerCase();
+    return reports.filter(report =>
+      report.title.toLowerCase().includes(q) ||
+      report.summary.toLowerCase().includes(q) ||
+      report.keyInsights.diagnosis.some(d => d.toLowerCase().includes(q))
+    );
+  }, [reports, searchQuery]);
+
+  // Get the 4 most recent reports
+  const recentReports = useMemo(() =>
+    [...filteredReports]
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 4),
+    [filteredReports]
   );
 
-  // Get the 5 most recent reports
-  const recentReports = [...filteredReports]
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-    .slice(0, 4);
+  // Pre-compute per-type lists to avoid redundant .filter() calls in render
+  const labReports = useMemo(() => recentReports.filter(r => r.type === "lab"), [recentReports]);
+  const radiologyReports = useMemo(() => recentReports.filter(r => r.type === "radiology"), [recentReports]);
+  const consultationReports = useMemo(() => recentReports.filter(r => r.type === "consultation"), [recentReports]);
 
   const greetingMessage = () => {
     const hour = new Date().getHours();
@@ -178,13 +189,11 @@ const Dashboard = () => {
               <TabsContent value="lab" className="mt-4">
                 {/* Lab results tab content */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                  {recentReports
-                    .filter(report => report.type === "lab")
-                    .map((report) => (
+                  {labReports.map((report) => (
                       <ReportCard key={report.id} report={report} />
                     ))}
                 </div>
-                {recentReports.filter(report => report.type === "lab").length === 0 && (
+                {labReports.length === 0 && (
                   <div className="text-center py-8">
                     <p className="text-gray-500">No lab reports found</p>
                   </div>
@@ -193,13 +202,11 @@ const Dashboard = () => {
               <TabsContent value="radiology" className="mt-4">
                 {/* Radiology tab content */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                  {recentReports
-                    .filter(report => report.type === "radiology")
-                    .map((report) => ( 
+                  {radiologyReports.map((report) => ( 
                       <ReportCard key={report.id} report={report} />
                     ))}
                 </div>
-                {recentReports.filter(report => report.type === "radiology").length === 0 && (
+                {radiologyReports.length === 0 && (
                   <div className="text-center py-8">
                     <p className="text-gray-500">No radiology reports found</p>
                   </div>
@@ -208,13 +215,11 @@ const Dashboard = () => {
               <TabsContent value="consultation" className="mt-4">
                 {/* Consultation tab content */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                  {recentReports
-                    .filter(report => report.type === "consultation")
-                    .map((report) => (
+                  {consultationReports.map((report) => (
                       <ReportCard key={report.id} report={report} />
                     ))}
                 </div>
-                {recentReports.filter(report => report.type === "consultation").length === 0 && (
+                {consultationReports.length === 0 && (
                   <div className="text-center py-8">
                     <p className="text-gray-500">No consultation reports found</p>
                   </div>

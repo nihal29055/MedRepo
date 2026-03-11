@@ -8,14 +8,20 @@ exports.getDoctorProfile = async (req, res) => {
       return res.status(404).json({ message: "Doctor not found" });
     }
 
-    const reports = await Report.find({ doctorId: req.user.id });
+    const [patientsChecked, recentReports] = await Promise.all([
+      Report.countDocuments({ doctorId: req.user.id }),
+      Report.find({ doctorId: req.user.id })
+        .sort({ reportDate: -1 })
+        .limit(5)
+        .select("patientName reportDate reportType"),
+    ]);
 
     res.status(200).json({
       name: doctor.name,
       specialization: doctor.specialization || "General",
-      patientsChecked: reports.length,
+      patientsChecked,
       experience: doctor.experience || 0,
-      recentReports: reports.slice(-5).map((report) => ({
+      recentReports: recentReports.map((report) => ({
         patientName: report.patientName,
         reportDate: report.reportDate,
         reportType: report.reportType,
