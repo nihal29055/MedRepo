@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useReports } from "../context/ReportContext";
 import Header from "../components/layout/Header";
 import ReportCard from "../components/reports/ReportCard";
@@ -40,27 +40,34 @@ const Reports = () => {
   const [typeFilter, setTypeFilter] = useState<ReportType | "all">("all");
   const [date, setDate] = useState<Date | undefined>(undefined);
   
-  // Filter reports
-  const filteredReports = reports.filter(report => {
-    // Filter by search query
-    const matchesSearch = 
-      searchQuery === "" || 
-      report.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      report.summary.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    // Filter by type
-    const matchesType = typeFilter === "all" || report.type === typeFilter;
-    
-    // Filter by date
-    const matchesDate = !date || 
-      format(new Date(report.createdAt), "yyyy-MM-dd") === format(date, "yyyy-MM-dd");
-    
-    return matchesSearch && matchesType && matchesDate;
-  });
-  
-  // Sort reports by date (newest first)
-  const sortedReports = [...filteredReports].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  // Pre-format the selected date once so it isn't recomputed inside the filter loop
+  const formattedDate = useMemo(() => (date ? format(date, "yyyy-MM-dd") : null), [date]);
+
+  // Filter reports – single pass, memoized
+  const filteredReports = useMemo(() => {
+    const q = searchQuery.toLowerCase();
+    return reports.filter(report => {
+      const matchesSearch =
+        searchQuery === "" ||
+        report.title.toLowerCase().includes(q) ||
+        report.summary.toLowerCase().includes(q);
+
+      if (!matchesSearch) return false;
+
+      if (typeFilter !== "all" && report.type !== typeFilter) return false;
+
+      if (formattedDate && format(new Date(report.createdAt), "yyyy-MM-dd") !== formattedDate) return false;
+
+      return true;
+    });
+  }, [reports, searchQuery, typeFilter, formattedDate]);
+
+  // Sort reports by date (newest first), memoized
+  const sortedReports = useMemo(() =>
+    [...filteredReports].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    ),
+    [filteredReports]
   );
   
   const resetFilters = () => {

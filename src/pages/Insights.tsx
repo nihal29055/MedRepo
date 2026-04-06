@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useMemo } from "react";
 import { useReports } from "../context/ReportContext";
 import Header from "../components/layout/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
@@ -43,7 +43,7 @@ const Insights = () => {
   ];
 
   // Mock recommendations based on reports
-  const generateRecommendations = () => {
+  const recommendations = useMemo(() => {
     if (reports.length === 0) {
       return [
         "Upload your first medical report to get personalized recommendations",
@@ -57,23 +57,29 @@ const Insights = () => {
       report.keyInsights.diagnosis.some(d => d.toLowerCase().includes("headache"))
     );
     
-    const recommendations = [
+    const result = [
       "Maintain a consistent sleep schedule of 7-8 hours per night",
       "Stay hydrated by drinking at least 2 liters of water daily",
       "Include 30 minutes of moderate exercise in your daily routine"
     ];
     
     if (containsHeadache) {
-      recommendations.push(
+      result.push(
         "For headache management, reduce screen time and practice relaxation techniques",
         "Consider keeping a headache journal to identify triggers"
       );
     }
     
-    return recommendations;
-  };
+    return result;
+  }, [reports]);
 
-  const recommendations = generateRecommendations();
+  // Pre-compute medication list to avoid flatMap + filter on every render
+  const medicationList = useMemo(() =>
+    reports
+      .flatMap(report => report.keyInsights.medications)
+      .filter(med => med && med !== "No medications" && med !== "None prescribed"),
+    [reports]
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
@@ -331,10 +337,7 @@ const Insights = () => {
                           Based on your medical reports, you have been prescribed the following medications:
                         </p>
                         <ul className="list-disc list-inside space-y-2 text-gray-700">
-                          {reports
-                            .flatMap(report => report.keyInsights.medications)
-                            .filter(med => med && med !== "No medications" && med !== "None prescribed")
-                            .map((med, index) => (
+                          {medicationList.map((med, index) => (
                               <li key={index}>{med}</li>
                             ))}
                         </ul>
